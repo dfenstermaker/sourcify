@@ -22,6 +22,9 @@ parameters:
   run-tests:
     type: boolean
     default: false
+  deploy-master:
+    type: boolean
+    default: false
 
 ################
 ### ALIASES ####
@@ -92,8 +95,12 @@ workflows:
     when:
       and:
         - or:
-            - equal: [master, << pipeline.git.branch >>]
+          - equal: [master, << pipeline.git.branch >>]
+          and:
             - equal: [staging, << pipeline.git.branch >>]
+            - matches: 
+                pattern: .*@\d\.\d\.\d
+                value: << pipeline.git.tag >>
         - or:
             [
               << pipeline.parameters.run-build-ipfs >>,
